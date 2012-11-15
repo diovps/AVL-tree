@@ -31,13 +31,16 @@ void BST<T>::insert(T v) {
 		}
 
 		if(v < (*curr)->getValue()){
+			(*curr)->setBalance((*curr)->getBalance()-1);
 			curr = &((*curr)->getLeftChild());
 		}else if(v > (*curr)->getValue()){
+			(*curr)->setBalance((*curr)->getBalance()+1);
 			curr = &((*curr)->getRightChild());
 		}
 	}
 	
 	*curr = new Node<T>(v);
+	
 }
 
 template <typename T>
