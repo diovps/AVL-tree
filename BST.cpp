@@ -23,7 +23,8 @@ bool BST<T>::find(T v) {
 template <typename T>
 void BST<T>::insert(T v) {	
 	Node<T>** curr = &root;
-	Node<T>** critNode = 0;
+	Node<T>* blankNode = new Node<T>(0);
+	Node<T>** critNode = &blankNode;
 	
 	while(*curr!=0){
 		if((*curr)->getBalance()!=0){
@@ -38,10 +39,59 @@ void BST<T>::insert(T v) {
 			curr = &((*curr)->getRightChild());
 		}
 	}
-	
 	*curr = new Node<T>(v);
 	
+	Node<T>** R;
+	int d1 = 0;
+	int d2 = 0;
+	//int d3 = 0;
+
+	if(*critNode != 0){
+		Node<T>* C;
+		Node<T>* B;
+
+		if(v == (*critNode)->getValue()){
+			d1 = 0;
+			C = *critNode;
+		}else if(v < (*critNode)->getValue()){
+			d1 = -1;
+			C = (*critNode)->getLeftChild();
+		}else{
+			d1 = 1;
+			C = (*critNode)->getRightChild();
+		}
+		
+		if((*critNode)->getBalance()!=d1){
+			(*critNode)->setBalance(0);
+			R = curr;
+		}else{
+			if(v==C->getValue()){
+				d2 = 0;
+				B = C;	
+			}else if(v < C->getValue()){
+				d2 = -1;
+				B = C->getLeftChild();
+			}else{
+				d2 = 1;
+				B = C->getRightChild();
+			}
+			
+			if(d2 == d1){
+				(*critNode)->setBalance(0);
+				R = &B;
+				if(d1<0){
+					rotateRight(critNode);
+				}else{
+					rotateLeft(critNode);
+				}
+			}else{
+				
+			}
+		}
+		
+	}
 }
+
 
 template <typename T>
 void BST<T>::rotate(T v){
@@ -57,7 +107,7 @@ void BST<T>::rotate(T v){
 			break;
 		}
 	}
-	rotateLeft(curr);	
+	rotateRight(curr);	
 }
 	
 template <typename T>
