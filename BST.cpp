@@ -32,23 +32,24 @@ void BST<T>::insert(T v) {
 		}
 
 		if(v < (*curr)->getValue()){
-			//(*curr)->setBalance((*curr)->getBalance()-1);
+			(*curr)->setBalance((*curr)->getBalance()-1);
 			curr = &((*curr)->getLeftChild());
 		}else if(v > (*curr)->getValue()){
-			//(*curr)->setBalance((*curr)->getBalance()+1);
+			(*curr)->setBalance((*curr)->getBalance()+1);
 			curr = &((*curr)->getRightChild());
 		}
 	}
 	*curr = new Node<T>(v);
+	std::cout << (*critNode)->getValue() << std::endl;
 	
-	Node<T>** R;
+	Node<T>** R = curr;;
 	int d1 = 0;
 	int d2 = 0;
 	int d3 = 0;
 
 	if(*critNode != 0){
-		Node<T>* C;
-		Node<T>* B;
+		Node<T>* C = 0;
+		Node<T>* B = 0;
 
 		if(v == (*critNode)->getValue()){
 			d1 = 0;
@@ -99,7 +100,7 @@ void BST<T>::insert(T v) {
 			
 				if(d3==d2){
 					(*critNode)->setBalance(0);
-					C->setBalance(0);
+					C->setBalance(d1);
 				}else if(d3 == (0-d2)){
 					(*critNode)->setBalance(d2);
 				}else{
@@ -107,9 +108,9 @@ void BST<T>::insert(T v) {
 				}
 				
 				if(d2<0){
-					//rotateRight(C);
+					rotateRight(&C);
 				}else{
-					//rotateLeft(C);
+					rotateLeft(&C);
 				}
 
 				if(d1<0){
@@ -121,8 +122,21 @@ void BST<T>::insert(T v) {
 		}
 		
 	}else{
-		R = curr;
-		(*critNode)->setBalance(0);
+		R = &root;
+		//(*critNode)->setBalance(0);
+	}
+	
+	Node<T>** temp = R;
+	
+	while(*temp!=0 && (*temp)->getValue()!=v){
+		//std::cout << "pew" << std::endl;
+		if((*temp)->getValue()<v){
+			(*temp)->setBalance(1);
+			temp = &((*temp)->getRightChild());
+		}else{
+			(*temp)->setBalance(-1);
+			temp = &((*temp)->getLeftChild());
+		}
 	}
 }
 
