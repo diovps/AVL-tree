@@ -33,10 +33,8 @@ void BST<T>::insert(T v) {
 		}
 
 		if(v < (*curr)->getValue()){
-			//(*curr)->setBalance((*curr)->getBalance()-1);
 			curr = &((*curr)->getLeftChild());
 		}else if(v > (*curr)->getValue()){
-			//(*curr)->setBalance((*curr)->getBalance()+1);
 			curr = &((*curr)->getRightChild());
 		}
 	}
@@ -62,7 +60,7 @@ void BST<T>::insert(T v) {
 		}
 		
 		if((*critNode)->getBalance()!=d1){
-			(*critNode)->setBalance(d1);
+			(*critNode)->setBalance(0);
 			R = curr;
 			std::cout << "No rotation" << std::endl;
 		}else{
@@ -93,7 +91,7 @@ void BST<T>::insert(T v) {
 				if(d3==d2){
 					(*critNode)->setBalance(0);
 					C->setBalance(d1);
-				}else if(d3 == (0-d2)){
+				}else if(d3 == -d2){
 					(*critNode)->setBalance(d2);
 				}else{
 					(*critNode)->setBalance(0);
