@@ -23,12 +23,13 @@ bool BST<T>::find(T v) {
 template <typename T>
 void BST<T>::insert(T v) {	
 	Node<T>** curr = &root;
-	Node<T>* blankNode = new Node<T>(0);
-	Node<T>** critNode = &blankNode;
-	
+	Node<T>** critNode;
+	bool CritNodeFound = false;
+
 	while(*curr!=0){
 		if((*curr)->getBalance()!=0){
 			critNode = curr;
+			CritNodeFound = true;
 		}
 
 		if(v < (*curr)->getValue()){
@@ -40,14 +41,15 @@ void BST<T>::insert(T v) {
 		}
 	}
 	*curr = new Node<T>(v);
-	std::cout << (*critNode)->getValue() << std::endl;
 	
-	Node<T>** R = curr;
+	Node<T>** R;
 	int d1 = 0;
 	int d2 = 0;
 	int d3 = 0;
-
-	if(*critNode != 0){
+	
+	if(!CritNodeFound){
+		R = &root;
+	}else{
 		Node<T>* C = 0;
 		Node<T>* B = 0;
 
@@ -102,15 +104,11 @@ void BST<T>::insert(T v) {
 			}
 		}		
 
-	}else{
-		R = &root;
-		//(*critNode)->setBalance(0);
 	}
 	
 	Node<T>** temp = R;
 		
 	while(*temp!=0 && (*temp)->getValue()!=v){
-		std::cout << "pew" << std::endl;
 		if((*temp)->getValue()<v){
 			(*temp)->setBalance(1);
 			temp = &((*temp)->getRightChild());
