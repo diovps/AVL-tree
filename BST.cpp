@@ -32,17 +32,17 @@ void BST<T>::insert(T v) {
 		}
 
 		if(v < (*curr)->getValue()){
-			(*curr)->setBalance((*curr)->getBalance()-1);
+			//(*curr)->setBalance((*curr)->getBalance()-1);
 			curr = &((*curr)->getLeftChild());
 		}else if(v > (*curr)->getValue()){
-			(*curr)->setBalance((*curr)->getBalance()+1);
+			//(*curr)->setBalance((*curr)->getBalance()+1);
 			curr = &((*curr)->getRightChild());
 		}
 	}
 	*curr = new Node<T>(v);
 	std::cout << (*critNode)->getValue() << std::endl;
 	
-	Node<T>** R = curr;;
+	Node<T>** R = curr;
 	int d1 = 0;
 	int d2 = 0;
 	int d3 = 0;
@@ -51,10 +51,7 @@ void BST<T>::insert(T v) {
 		Node<T>* C = 0;
 		Node<T>* B = 0;
 
-		if(v == (*critNode)->getValue()){
-			d1 = 0;
-			C = *critNode;
-		}else if(v < (*critNode)->getValue()){
+		if(v < (*critNode)->getValue()){
 			d1 = -1;
 			C = (*critNode)->getLeftChild();
 		}else{
@@ -63,13 +60,11 @@ void BST<T>::insert(T v) {
 		}
 		
 		if((*critNode)->getBalance()!=d1){
-			(*critNode)->setBalance(0);
+			(*critNode)->setBalance(d1);
 			R = curr;
+			std::cout << "No rotation" << std::endl;
 		}else{
-			if(v==C->getValue()){
-				d2 = 0;
-				B = C;	
-			}else if(v < C->getValue()){
+			if(v < C->getValue()){
 				d2 = -1;
 				B = C->getLeftChild();
 			}else{
@@ -80,17 +75,12 @@ void BST<T>::insert(T v) {
 			if(d2 == d1){
 				(*critNode)->setBalance(0);
 				R = &B;
-				if(d1<0){
-					rotateRight(critNode);
-				}else{
-					rotateLeft(critNode);
-				}
+				
+				std::cout << "Single Rotation" << std::endl;
+				rotate(critNode,-d1);
 			}else{
 					
-				if(v==B->getValue()){
-					d3 = 0;
-					R = &B;	
-				}else if(v < B->getValue()){
+				if(v < B->getValue()){
 					d3 = -1;
 					R = &(B->getLeftChild());
 				}else{
@@ -106,30 +96,21 @@ void BST<T>::insert(T v) {
 				}else{
 					(*critNode)->setBalance(0);
 				}
-				
-				if(d2<0){
-					rotateRight(&C);
-				}else{
-					rotateLeft(&C);
-				}
-
-				if(d1<0){
-					rotateRight(critNode);
-				}else{
-					rotateLeft(critNode);
-				}
+				std::cout << "Double rotation" << std::endl;	
+				rotate(&C,-d2);
+				rotate(critNode,-d1);
 			}
-		}
-		
+		}		
+
 	}else{
 		R = &root;
 		//(*critNode)->setBalance(0);
 	}
 	
 	Node<T>** temp = R;
-	
+		
 	while(*temp!=0 && (*temp)->getValue()!=v){
-		//std::cout << "pew" << std::endl;
+		std::cout << "pew" << std::endl;
 		if((*temp)->getValue()<v){
 			(*temp)->setBalance(1);
 			temp = &((*temp)->getRightChild());
@@ -142,20 +123,12 @@ void BST<T>::insert(T v) {
 
 
 template <typename T>
-void BST<T>::rotate(T v){
-
-	Node<T>** curr = &root;
-		
-	while(*curr!=0){
-		if(v < (*curr)->getValue()){
-			curr = &((*curr)->getLeftChild());
-		}else if(v > (*curr)->getValue()){
-			curr = &((*curr)->getRightChild());
-		}else{
-			break;
-		}
-	}
-	rotateRight(curr);	
+void BST<T>::rotate(Node<T>** Q, int d){
+	if(d==-1){
+		rotateLeft(Q);
+	}else{
+		rotateRight(Q);
+	}	
 }
 	
 template <typename T>

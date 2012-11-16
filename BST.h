@@ -16,7 +16,7 @@ class BST {
  
   void levelPrint(); 
   
-  void rotate(T v); 
+  void rotate(Node<T>**,int d); 
   void rotateRight(Node<T>** n); 
   void rotateLeft(Node<T>** n);
 
