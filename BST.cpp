@@ -48,15 +48,15 @@ void BST<T>::insert(T v) {
 	if(!CritNodeFound){
 		R = &root;
 	}else{
-		Node<T>* C = 0;
+		Node<T>** C = 0;
 		Node<T>* B = 0;
 
 		if(v < (*critNode)->getValue()){
 			d1 = -1;
-			C = (*critNode)->getLeftChild();
+			C = &((*critNode)->getLeftChild());
 		}else{
 			d1 = 1;
-			C = (*critNode)->getRightChild();
+			C = &((*critNode)->getRightChild());
 		}
 		
 		if((*critNode)->getBalance()!=d1){
@@ -64,12 +64,12 @@ void BST<T>::insert(T v) {
 			R = curr;
 			std::cout << "No rotation" << std::endl;
 		}else{
-			if(v < C->getValue()){
+			if(v < (*C)->getValue()){
 				d2 = -1;
-				B = C->getLeftChild();
+				B = (*C)->getLeftChild();
 			}else{
 				d2 = 1;
-				B = C->getRightChild();
+				B = (*C)->getRightChild();
 			}
 			
 			if(d2 == d1){
@@ -90,31 +90,34 @@ void BST<T>::insert(T v) {
 			
 				if(d3==d2){
 					(*critNode)->setBalance(0);
-					C->setBalance(d1);
+					(*C)->setBalance(d1);
 				}else if(d3 == -d2){
 					(*critNode)->setBalance(d2);
 				}else{
 					(*critNode)->setBalance(0);
 				}
 				std::cout << "Double rotation" << std::endl;	
-				rotate(&C,-d2);
+				rotate(C,-d2);
 				rotate(critNode,-d1);
+				(*critNode)->setBalance(0);
 			}
 		}		
 
 	}
 	
 	Node<T>** temp = R;
-		
+	std::cout << "R is:" << (*R)->getValue() << std::endl;
 	while(*temp!=0 && (*temp)->getValue()!=v){
+		
 		if((*temp)->getValue()<v){
 			(*temp)->setBalance(1);
 			temp = &((*temp)->getRightChild());
-		}else{
+		}else if((*temp)->getValue()>v){
 			(*temp)->setBalance(-1);
 			temp = &((*temp)->getLeftChild());
 		}
-	}
+
+	}		
 }
 
 
@@ -130,15 +133,18 @@ void BST<T>::rotate(Node<T>** Q, int d){
 template <typename T>
 void BST<T>::rotateRight(Node<T>** critNode){
 	
+	std::cout << "Right" << std::endl;
 	Node<T>* currNode = *critNode;	
 	*critNode = (*critNode)->getLeftChild();
 	currNode->setLeftChild(*((*critNode)->getRightChild()));
 	(*critNode)->setRightChild(*currNode);
+	
 }
 
 template <typename T>
 void BST<T>::rotateLeft(Node<T>** critNode){	
 	
+	std::cout << "Left" << std::endl;
 	Node<T>* currNode = *critNode;	
 	*critNode = (*critNode)->getRightChild();
 	currNode->setRightChild(*((*critNode)->getLeftChild()));
