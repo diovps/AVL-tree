@@ -8,7 +8,6 @@ int main() {
   bst->insert(8);
   bst->insert(6);
   bst->remove(6);
-  bst->insert(10);
   bst->print();
   bst->levelPrint();
 }

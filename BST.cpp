@@ -2,6 +2,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <stdlib.h>
 
 template <typename T>
 BST<T>::BST() {
@@ -174,7 +175,7 @@ void BST<T>::remove(T v) {
   if((*temp)->getRightChild()==0){
 	Node<T>* something = (*temp);
 	(*temp) = (*temp)->getLeftChild();
-	
+	path.push_back(*temp);	
 	delete something;
   }else{
 	ios = &((*ios)->getRightChild());
@@ -206,20 +207,7 @@ void BST<T>::remove(T v) {
   }
 
   while(!path.empty()){
-	Node<T>* P = path.back();
-	if(P->getLeftChild() && P->getRightChild()){
-		int left = P->getLeftChild()->getBalance();
-		int right = P->getRightChild()->getBalance();
-		P->setBalance(right-left);
-	}else if(!P->getLeftChild() || !P->getRightChild()){
-		P->setBalance(0);
-	}else if(P->getLeftChild()&&!P->getRightChild()){
-		int left = P->getLeftChild()->getBalance()-1;
-		P->setBalance(left);
-	}else if(!P->getLeftChild()&&P->getRightChild()){
-		int right = P->getRightChild()->getBalance()+1;
-		P->setBalance(right);
-	}
+	//Node<T>* P = path.back();	
 	path.pop_back();
   }
 
