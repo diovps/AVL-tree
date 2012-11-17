@@ -175,7 +175,6 @@ void BST<T>::remove(T v) {
   if((*temp)->getRightChild()==0){
 	Node<T>* something = (*temp);
 	(*temp) = (*temp)->getLeftChild();
-	path.push_back(*temp);	
 	delete something;
   }else{
 	ios = &((*ios)->getRightChild());
@@ -205,9 +204,32 @@ void BST<T>::remove(T v) {
   if(!path.empty()){
 	path.pop_back();
   }
-
+  
   while(!path.empty()){
-	//Node<T>* P = path.back();	
+	Node<T>** parent = &path.back();
+	int parentVal = path.back()->getValue();
+  	
+	if(v < parentVal){
+		(*parent)->setBalance((*parent)->getBalance()+1);
+  	}else if(v > parentVal){
+		(*parent)->setBalance((*parent)->getBalance()-1);
+  	}
+  	
+	if((*parent)->getBalance()==-1 || (*parent)->getBalance()==1){
+		return;
+  	}
+	
+	if((*parent)->getBalance()==2 || (*parent)->getBalance()==-2){
+		if(v < parentVal){
+			(*parent)->setBalance((*parent)->getBalance()-1);
+			//rotateLeft(parent);
+		}else if(v >parentVal){
+			(*parent)->setBalance((*parent)->getBalance()+1);
+			//rotateRight(parent);
+		}
+	}
+
+	
 	path.pop_back();
   }
 
@@ -215,17 +237,33 @@ void BST<T>::remove(T v) {
 
 template <typename T>
 void BST<T>::print() {
-  traversalPrint(root);
+  	std::cout << "In Order: ";
+  	inOrderTraversal(root);
+	std::cout << std::endl;
+	std::cout << "Post Order: ";
+  	postOrderTraversal(root);
+	std::cout << std::endl;
 }
 
 template <typename T>
-void BST<T>::traversalPrint(Node<T>* root) {
-  if(root != 0) {
-    traversalPrint(root->getLeftChild());
+void BST<T>::inOrderTraversal(Node<T>* root) {
+  	if(root != 0) {
+    		inOrderTraversal(root->getLeftChild());
     
-    std::cout << root->getValue() << " Balance: " << root->getBalance()<< std::endl;
-    traversalPrint(root->getRightChild());
-  }
+    		std::cout << root->getValue() << " Balance:(" << 
+				root->getBalance()<< ") ";
+    		inOrderTraversal(root->getRightChild());
+  	}
+}
+
+template <typename T>
+void BST<T>::postOrderTraversal(Node<T>* root){
+  	if(root != 0) {
+    		postOrderTraversal(root->getLeftChild());
+    		postOrderTraversal(root->getRightChild());
+    		std::cout << root->getValue() << " Balance:(" << 
+			root->getBalance()<< ") ";
+  	}
 }
 
 template <typename T>
