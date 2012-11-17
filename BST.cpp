@@ -1,6 +1,7 @@
 #include "BST.h"
 #include <iostream>
 #include <list>
+#include <vector>
 
 template <typename T>
 BST<T>::BST() {
@@ -154,8 +155,74 @@ void BST<T>::rotateLeft(Node<T>** critNode){
 
 template <typename T>
 void BST<T>::remove(T v) {
-  Node<T>* temp = new Node<T>(v);
-  root = temp;
+  Node<T>** temp = &root;
+  
+  std::list<Node<T>*> path;
+  path.push_back(root);  
+
+  while(*temp!=0 && (*temp)->getValue()!=v){
+	if((*temp)->getValue()<v)
+	    temp = &((*temp)->getRightChild());
+	else{
+	    temp = &((*temp)->getLeftChild());
+	}
+	path.push_back(*temp);
+  }
+  if(*temp==0) return;
+  Node<T>** ios = temp;
+
+  if((*temp)->getRightChild()==0){
+	Node<T>* something = (*temp);
+	(*temp) = (*temp)->getLeftChild();
+	
+	delete something;
+  }else{
+	ios = &((*ios)->getRightChild());
+	
+	path.push_back((*ios)->getRightChild());
+	
+	bool hIos = (*ios)->getLeftChild()==0;
+	
+	while((*ios)->getLeftChild()!=0){
+		ios = &((*ios)->getLeftChild());
+		path.push_back((*ios)->getLeftChild());
+	}
+  	
+	Node<T>* leftTree = (*temp)->getLeftChild();
+	Node<T>* rightTree = (*temp)->getRightChild();
+	Node<T>* iosRight = (*ios)->getRightChild();
+
+	(*ios)->setLeftChild(*leftTree);
+	(*temp) = (*ios);
+	
+	if(!hIos){
+		rightTree->setLeftChild(*iosRight);
+		(*temp)->setRightChild(*rightTree);	
+   	}
+   }
+  
+  if(!path.empty()){
+	path.pop_back();
+  }
+
+  while(!path.empty()){
+	Node<T>* P = path.back();
+	if(P->getLeftChild() && P->getRightChild()){
+		int left = P->getLeftChild()->getBalance();
+		int right = P->getRightChild()->getBalance();
+		P->setBalance(right-left);
+	}else if(!P->getLeftChild() || !P->getRightChild()){
+		P->setBalance(0);
+	}else if(P->getLeftChild()&&!P->getRightChild()){
+		int left = P->getLeftChild()->getBalance()-1;
+		P->setBalance(left);
+	}else if(!P->getLeftChild()&&P->getRightChild()){
+		int right = P->getRightChild()->getBalance()+1;
+		P->setBalance(right);
+	}
+	path.pop_back();
+  }
+
 }
 
 template <typename T>
